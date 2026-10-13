@@ -1,38 +1,7 @@
-import type { Cents } from '@/domain/money';
-import type { FiscalStatus, PaymentMethod } from '@/domain/sale';
-import type { Unit } from '@/domain/quantity';
+import type { FiscalStatus } from '@/domain/sale';
+import type { FiscalSaleSnapshot } from '@/domain/fiscal-snapshot';
 
-/** Snapshot imutável de uma venda, montado por função pura no domínio. */
-export interface FiscalSaleSnapshot {
-  saleId: string;
-  number: number;
-  createdAt: string;
-  emitter: {
-    storeName: string;
-    cnpj?: string | null;
-    address?: string | null;
-  };
-  customer?: {
-    document?: string | null;
-  } | null;
-  items: {
-    description: string;
-    unit: Unit;
-    quantity: number; // milésimos
-    unitPriceCents: Cents;
-    discountCents: Cents;
-    totalCents: Cents;
-    // Campos fiscais (hoje opcionais/ausentes)
-    ncm?: string | null;
-    cfop?: string | null;
-  }[];
-  payments: {
-    method: PaymentMethod;
-    amountCents: Cents;
-  }[];
-  totalCents: Cents;
-  discountCents: Cents;
-}
+export type { FiscalSaleSnapshot };
 
 export interface FiscalResult {
   status: FiscalStatus;
