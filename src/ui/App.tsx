@@ -4,6 +4,8 @@ import { useContainer } from '@/ui/container-context';
 import { useSession } from '@/ui/session/session-store';
 import { Layout } from '@/ui/Layout';
 import { PosPage } from '@/ui/pos/PosPage';
+import { ProductsPage } from '@/ui/products/ProductsPage';
+import { StockPage } from '@/ui/stock/StockPage';
 import { Placeholder } from '@/ui/components/Placeholder';
 
 const router = createBrowserRouter([
@@ -12,8 +14,8 @@ const router = createBrowserRouter([
     element: <Layout />,
     children: [
       { index: true, element: <PosPage /> },
-      { path: 'produtos', element: <Placeholder title="Produtos" phase="Fase 5" /> },
-      { path: 'estoque', element: <Placeholder title="Estoque" phase="Fase 5" /> },
+      { path: 'produtos', element: <ProductsPage /> },
+      { path: 'estoque', element: <StockPage /> },
       { path: 'caixa', element: <Placeholder title="Sessão de caixa" phase="Fase 6" /> },
       { path: 'relatorios', element: <Placeholder title="Relatórios" phase="Fase 7" /> },
       { path: 'configuracoes', element: <Placeholder title="Configurações" phase="Fase 7" /> },
