@@ -1,14 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import { createContainer } from '@/composition-root';
+import { ContainerProvider } from '@/ui/container-context';
+import { App } from '@/ui/App';
+import { registerServiceWorker } from '@/ui/pwa';
+
+// Solicita armazenamento persistente para o IndexedDB não ser descartado.
+if (navigator.storage?.persist) {
+  navigator.storage.persist().catch(() => void 0);
+}
+
+const container = createContainer();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <div className="flex h-full items-center justify-center bg-slate-900 text-brand-100">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold">PDV Mercadinho</h1>
-        <p className="mt-2 text-slate-400">Fundação pronta. Demais fases em construção.</p>
-      </div>
-    </div>
+    <ContainerProvider container={container}>
+      <App />
+    </ContainerProvider>
   </React.StrictMode>,
 );
+
+registerServiceWorker();
