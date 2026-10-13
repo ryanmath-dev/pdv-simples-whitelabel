@@ -7,8 +7,9 @@ import { PosPage } from '@/ui/pos/PosPage';
 import { ProductsPage } from '@/ui/products/ProductsPage';
 import { StockPage } from '@/ui/stock/StockPage';
 import { CashSessionPage } from '@/ui/cash/CashSessionPage';
+import { ReportsPage } from '@/ui/reports/ReportsPage';
+import { SettingsPage } from '@/ui/settings/SettingsPage';
 import { LoginPage } from '@/ui/session/LoginPage';
-import { Placeholder } from '@/ui/components/Placeholder';
 
 const router = createBrowserRouter([
   {
@@ -19,8 +20,8 @@ const router = createBrowserRouter([
       { path: 'produtos', element: <ProductsPage /> },
       { path: 'estoque', element: <StockPage /> },
       { path: 'caixa', element: <CashSessionPage /> },
-      { path: 'relatorios', element: <Placeholder title="Relatórios" phase="Fase 7" /> },
-      { path: 'configuracoes', element: <Placeholder title="Configurações" phase="Fase 7" /> },
+      { path: 'relatorios', element: <ReportsPage /> },
+      { path: 'configuracoes', element: <SettingsPage /> },
     ],
   },
 ]);
