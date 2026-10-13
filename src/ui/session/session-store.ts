@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { AppContainer } from '@/composition-root';
 import type { User } from '@/domain/user';
-import { hashPin } from '@/domain/user';
+import { hashPin, verifyPin } from '@/domain/user';
 import { makeBase } from '@/domain/types';
 import type { CashSession } from '@/domain/cash-register';
 import type { StoreSettings } from '@/domain/settings';
@@ -15,6 +15,7 @@ interface SessionState {
   /** Garante settings/usuário padrão e carrega sessão de caixa aberta. */
   bootstrap: (container: AppContainer) => Promise<void>;
   setUser: (user: User | null) => void;
+  login: (container: AppContainer, userId: string, pin: string) => Promise<boolean>;
   refreshSettings: (container: AppContainer) => Promise<void>;
   refreshCashSession: (container: AppContainer) => Promise<void>;
   logout: () => void;
@@ -48,14 +49,26 @@ export const useSession = create<SessionState>((set, get) => ({
       await repos.users.put(admin);
     }
 
-    const current = get().currentUser ?? (await repos.users.getAll())[0] ?? null;
     const session = await repos.cashSessions.getOpenSession(settings.terminalId);
 
-    set({ settings, currentUser: current, cashSession: session ?? null, ready: true });
+    // Não seleciona usuário automaticamente: login é exigido.
+    set({ settings, cashSession: session ?? null, ready: true });
   },
 
   setUser(user) {
     set({ currentUser: user });
+  },
+
+  async login(container, userId, pin) {
+    const user = await container.repos.users.get(userId);
+    if (!user) return false;
+    const ok = await verifyPin(pin, user.pinHash);
+    if (!ok) return false;
+    const session = await container.repos.cashSessions.getOpenSession(
+      get().settings?.terminalId ?? 'TERM-01',
+    );
+    set({ currentUser: user, cashSession: session ?? null });
+    return true;
   },
 
   async refreshSettings(container) {

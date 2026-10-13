@@ -14,7 +14,7 @@ const NAV = [
 ];
 
 export function Layout() {
-  const { currentUser, settings, cashSession } = useSession();
+  const { currentUser, settings, cashSession, logout } = useSession();
 
   return (
     <div className="flex h-full flex-col bg-slate-50">
@@ -45,6 +45,13 @@ export function Layout() {
             {cashSession ? 'Caixa aberto' : 'Caixa fechado'}
           </span>
           <span className="opacity-80">{currentUser?.name}</span>
+          <button
+            onClick={logout}
+            className="rounded-md px-2 py-0.5 text-xs hover:bg-white/10"
+            title="Sair"
+          >
+            Sair
+          </button>
         </div>
       </header>
       <main className="flex flex-1 flex-col overflow-hidden">
