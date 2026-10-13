@@ -1,0 +1,1 @@
+{"root":["./src/main.tsx","./src/vite-env.d.ts","./src/domain/barcode.test.ts","./src/domain/barcode.ts","./src/domain/money.test.ts","./src/domain/money.ts","./src/domain/quantity.test.ts","./src/domain/quantity.ts"],"version":"5.9.3"}
