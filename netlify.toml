@@ -1,0 +1,29 @@
+[build]
+  command = "pnpm build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Service worker nunca deve ser cacheado (para detectar novas versões).
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+# Assets com hash podem ser cacheados agressivamente.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Fallback SPA (React Router) — todas as rotas servem o index.html.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
