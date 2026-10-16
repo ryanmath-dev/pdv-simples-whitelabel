@@ -62,8 +62,9 @@ function pickSyncAdapter(syncUrl: string | undefined): SyncAdapter {
 export function createContainer(options: CompositionOptions = {}): AppContainer {
   const fiscalName = options.fiscalProvider ?? import.meta.env.VITE_FISCAL_PROVIDER;
   const syncUrl = options.syncUrl ?? import.meta.env.VITE_SYNC_URL;
+  // Template/demo: modo demo LIGADO por padrão; desligue com VITE_DEMO_MODE=false.
   const demoMode =
-    options.demoMode ?? String(import.meta.env.VITE_DEMO_MODE).toLowerCase() === 'true';
+    options.demoMode ?? String(import.meta.env.VITE_DEMO_MODE ?? 'true').toLowerCase() !== 'false';
 
   const db = new PdvDatabase(options.dbName);
   const repos = createRepositories(db);

@@ -7,7 +7,9 @@ import { Input } from '@/ui/components/Input';
 import { Select } from '@/ui/components/Select';
 import { now } from '@/domain/types';
 import type { StoreSettings } from '@/domain/settings';
-import { exportDatabase, importDatabase, type BackupFile } from '@/infrastructure/db/backup';
+import { exportDatabase, importDatabase, clearDatabase, type BackupFile } from '@/infrastructure/db/backup';
+import { seedDemoData } from '@/infrastructure/seed/demo-seed';
+import { Modal } from '@/ui/components/Modal';
 import { downloadText } from '@/ui/lib/csv';
 
 export function SettingsPage() {
@@ -16,6 +18,7 @@ export function SettingsPage() {
   const show = useToasts((s) => s.show);
   const [form, setForm] = useState<StoreSettings | null>(settings);
   const [storage, setStorage] = useState<{ usage: number; quota: number; persisted: boolean } | null>(null);
+  const [resetOpen, setResetOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => setForm(settings), [settings]);
@@ -58,6 +61,13 @@ export function SettingsPage() {
     } catch (err) {
       show(err instanceof Error ? err.message : 'Falha ao restaurar.', 'error');
     }
+  }
+
+  async function resetDemo() {
+    await clearDatabase(container.db);
+    if (container.demoMode) await seedDemoData(container.db);
+    show('Demonstração resetada. Recarregando…', 'success');
+    setTimeout(() => window.location.reload(), 800);
   }
 
   const usagePct = storage && storage.quota > 0 ? (storage.usage / storage.quota) * 100 : 0;
@@ -152,7 +162,37 @@ export function SettingsPage() {
         </ul>
       </Section>
 
-      <div id="settings-reset-slot" />
+      <Section title="Zona de risco">
+        <p className="mb-3 text-sm text-slate-500">
+          {container.demoMode
+            ? 'Apaga todos os dados e recria a demonstração (produtos, estoque e vendas fictícias).'
+            : 'Apaga permanentemente todos os dados locais.'}
+        </p>
+        <Button variant="danger" onClick={() => setResetOpen(true)}>
+          {container.demoMode ? 'Resetar demonstração' : 'Apagar todos os dados'}
+        </Button>
+      </Section>
+
+      <Modal
+        open={resetOpen}
+        onClose={() => setResetOpen(false)}
+        title="Confirmar reset"
+        size="sm"
+        footer={
+          <>
+            <Button variant="secondary" onClick={() => setResetOpen(false)}>
+              Cancelar
+            </Button>
+            <Button variant="danger" onClick={resetDemo}>
+              Confirmar
+            </Button>
+          </>
+        }
+      >
+        <p className="text-slate-700">
+          Esta ação apaga todos os dados locais e não pode ser desfeita. Deseja continuar?
+        </p>
+      </Modal>
     </div>
   );
 }

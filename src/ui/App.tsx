@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { useContainer } from '@/ui/container-context';
 import { useSession } from '@/ui/session/session-store';
@@ -7,9 +7,18 @@ import { PosPage } from '@/ui/pos/PosPage';
 import { ProductsPage } from '@/ui/products/ProductsPage';
 import { StockPage } from '@/ui/stock/StockPage';
 import { CashSessionPage } from '@/ui/cash/CashSessionPage';
-import { ReportsPage } from '@/ui/reports/ReportsPage';
 import { SettingsPage } from '@/ui/settings/SettingsPage';
 import { LoginPage } from '@/ui/session/LoginPage';
+
+// Relatórios usam Recharts (pesado): carregado sob demanda para manter o
+// caixa leve no primeiro acesso offline.
+const ReportsPage = lazy(() =>
+  import('@/ui/reports/ReportsPage').then((m) => ({ default: m.ReportsPage })),
+);
+
+function Loading() {
+  return <div className="flex flex-1 items-center justify-center text-slate-400">Carregando…</div>;
+}
 
 const router = createBrowserRouter([
   {
@@ -20,7 +29,14 @@ const router = createBrowserRouter([
       { path: 'produtos', element: <ProductsPage /> },
       { path: 'estoque', element: <StockPage /> },
       { path: 'caixa', element: <CashSessionPage /> },
-      { path: 'relatorios', element: <ReportsPage /> },
+      {
+        path: 'relatorios',
+        element: (
+          <Suspense fallback={<Loading />}>
+            <ReportsPage />
+          </Suspense>
+        ),
+      },
       { path: 'configuracoes', element: <SettingsPage /> },
     ],
   },

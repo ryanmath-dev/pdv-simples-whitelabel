@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import { StatusBadge } from '@/ui/components/StatusBadge';
 import { ToastHost } from '@/ui/components/ToastHost';
+import { PwaBar } from '@/ui/components/PwaBar';
 import { useSession } from '@/ui/session/session-store';
 import { cn } from '@/ui/lib/cn';
 
@@ -54,6 +55,7 @@ export function Layout() {
           </button>
         </div>
       </header>
+      <PwaBar />
       <main className="flex flex-1 flex-col overflow-hidden">
         <Outlet />
       </main>

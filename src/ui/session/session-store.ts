@@ -6,6 +6,7 @@ import { makeBase } from '@/domain/types';
 import type { CashSession } from '@/domain/cash-register';
 import type { StoreSettings } from '@/domain/settings';
 import { defaultSettings } from '@/domain/settings';
+import { isDatabaseEmpty, seedDemoData } from '@/infrastructure/seed/demo-seed';
 
 interface SessionState {
   currentUser: User | null;
@@ -29,6 +30,11 @@ export const useSession = create<SessionState>((set, get) => ({
 
   async bootstrap(container) {
     const { repos } = container;
+
+    // Modo demo: popula o banco na primeira abertura.
+    if (container.demoMode && (await isDatabaseEmpty(container.db))) {
+      await seedDemoData(container.db);
+    }
 
     // Garante settings.
     let settings = await repos.settings.get();
